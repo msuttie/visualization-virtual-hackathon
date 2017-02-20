@@ -1,26 +1,42 @@
 
-(function (CS) {
+(function (PIVS) {
     'use strict';
 
     function symbolVis() { }
-    CS.deriveVisualizationFromBase(symbolVis);
+    PIVS.deriveVisualizationFromBase(symbolVis);
 
     symbolVis.prototype.init = function (scope, elem) {
         this.onDataUpdate = dataUpdate;
         this.onResize = resize;
-    }
 
-    function dataUpdate(data) {
+        scope.scale = 1;
 
-    }
+        var config = liquidFillGaugeDefaultSettings();
 
-    function resize(width, height) {
+        var svg = elem.find('svg')[0];
+        var id = 'liquid_' + Math.random().toString(36).substr(2, 16);
+        svg.id = id;
+        var gauge = loadLiquidFillGauge(id, 0, config)
 
-    }
+
+        var cachedIndicator = 0;
+        function dataUpdate(data) {
+            if (data) {
+                gauge.update(data.Indicator)
+                cachedIndicator = data.Indicator;
+            }
+        }
+
+        function resize(width, height) {
+            scope.scale = Math.min(width / 150, height / 150);
+            d3.select('#' + id).selectAll('*').remove();
+            gauge = loadLiquidFillGauge(id, cachedIndicator, config);
+        }
+    };
 
     var definition = {
         typeName: 'liquidgauge',
-        datasourceBehavior: CS.Extensibility.Enums.DatasourceBehaviors.Single,
+        datasourceBehavior: PIVS.Extensibility.Enums.DatasourceBehaviors.Single,
         visObjectType: symbolVis,
         getDefaultConfig: function () {
             return {
@@ -30,7 +46,7 @@
             };
         }
     };
-    CS.symbolCatalog.register(definition)
+    PIVS.symbolCatalog.register(definition)
 
     function liquidFillGaugeDefaultSettings() {
         return {
@@ -56,7 +72,7 @@
             waveTextColor: "#A4DBf8" // The color of the value text when the wave overlaps it.
         };
     }
-    
+
     function loadLiquidFillGauge(elementId, value, config) {
         if (config == null) config = liquidFillGaugeDefaultSettings();
 
@@ -294,4 +310,4 @@
 
         return new GaugeUpdater();
     }
-})(window.Coresight);
+})(window.PIVisualization);

@@ -1,12 +1,12 @@
-(function (CS) {
-    function symbol() { }
-    CS.deriveVisualizationFromBase(symbolVis);
+(function (PV) {
+    function symbolVis() { }
+    PV.deriveVisualizationFromBase(symbolVis);
 
-    symbolVis.prototype.init = function() {};
+    symbolVis.prototype.init = function(scope, element) {};
 
     var definition = {
         typeName: 'simpleValue',
-        datasourceBehavior: CS.Extensibility.Enums.DatasourceBehaviors.Single,
+        datasourceBehavior: PV.Extensibility.Enums.DatasourceBehaviors.Single,
         visObjectType: symbolVis,
         getDefaultConfig: function() {
             return {
@@ -17,6 +17,6 @@
         }
     };
 
-    CS.symbolCatalog.register(definition);
+    PV.symbolCatalog.register(definition);
 
 })(window.PIVisualization);
