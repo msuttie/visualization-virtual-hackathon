@@ -13,28 +13,37 @@
 
         var config = liquidFillGaugeDefaultSettings();
 
-        var svg = elem.find('svg')[0];
-        var id = 'liquid_' + Math.random().toString(36).substr(2, 16);
-        svg.id = id;
-        var gauge = loadLiquidFillGauge(id, 0, config)
+        var svg00 = elem.find('svg')[0];
+        var id00 = 'liquid_' + Math.random().toString(36).substr(2, 16);
+        svg00.id = id00;
+        var gauge00 = loadLiquidFillGauge(id00, 0, config)
+
+        var svg01 = elem.find('svg')[1];
+        var id01 = 'liquid_' + Math.random().toString(36).substr(2, 16);
+        svg01.id = id01;
+        var gauge01 = loadLiquidFillGauge(id01, 0, config)
 
         var cachedIndicator = 0;
         function dataUpdate(data) {
             if (data) {
-                gauge.update(data.Indicator)
+                gauge00.update(data.Indicator)
+                gauge01.update(data.Indicator + 1)
                 cachedIndicator = data.Indicator;
             }
         }
 
         function resize(width, height) {
             scope.scale = Math.min(width / 150, height / 150);
-            d3.select('#' + id).selectAll('*').remove();
-            gauge = loadLiquidFillGauge(id, cachedIndicator, config);
+            d3.select('#' + id00).selectAll('*').remove();
+            gauge00 = loadLiquidFillGauge(id00, cachedIndicator, config);
+
+            d3.select('#' + id01).selectAll('*').remove();
+            gauge01 = loadLiquidFillGauge(id01, cachedIndicator, config);
         }
     };
 
     var definition = {
-        typeName: 'liquidgauge',
+        typeName: 'compositeSymbol',
         datasourceBehavior: PIVS.Extensibility.Enums.DatasourceBehaviors.Single,
         visObjectType: symbolVis,
         getDefaultConfig: function () {
@@ -306,7 +315,6 @@
                     .attr('transform', 'translate(' + waveGroupXPosition + ',' + newHeight + ')')
             }
         }
-
         return new GaugeUpdater();
     }
 })(window.PIVisualization);
